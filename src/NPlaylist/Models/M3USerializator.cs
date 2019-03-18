@@ -1,20 +1,20 @@
 using System;
 using System.IO;
+using System.Text;
 
 namespace NPlaylist.Models
 {
     public class M3USerializator : ISerializator<M3UPlaylist>
     {
-        public void Serialize(M3UPlaylist playlist, Stream stream)
+        public string  Serialize(M3UPlaylist playlist)
         {
-            using (var sw = new StreamWriter(stream))
-            {
+           var  stringBuilder = new StringBuilder();
                 foreach (var entry in playlist.Entries)
                 {
-                    sw.WriteLine(entry.Path);
+                    stringBuilder.AppendLine(entry.Path);
                 }
-            }
-            
+
+                return stringBuilder.ToString();
         }
 
         public M3UPlaylist Deserialize(Stream stream)
