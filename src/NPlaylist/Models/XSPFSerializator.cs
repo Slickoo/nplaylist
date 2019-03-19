@@ -10,26 +10,33 @@ namespace NPlaylist.Models
         public string Serialize(XSPFPlaylist playlist)
         {
             var stringBuilder = new StringBuilder();
-            XNamespace ns = "http://www.acme.com/ABC";
-            stringBuilder.AppendLine(new XDeclaration("1.0", "UTF-8", null).ToString());
-            var trackList = new XElement("tracklist");
-
-            foreach (var entry in playlist.Entries)
+            if (playlist != null)
             {
-                var track = new XElement("track");
+                
+                stringBuilder.AppendLine(new XDeclaration("1.0", "UTF-8", null).ToString());
+                var trackList = new XElement("tracklist");
 
-                track.Add(new XElement("title", entry.Title));
+                foreach (var entry in playlist.Entries)
+                {
+                    var track = new XElement("track");
 
-                track.Add(new XElement("location", entry.Path));
-                trackList.Add(track);
+                    track.Add(new XElement("title", entry.Title));
 
+                    track.Add(new XElement("location", entry.Path));
+                    trackList.Add(track);
+
+                }
+
+                var playlistTag = new XElement("playlist", new XAttribute("version", playlist.Version.ToString()));
+
+                playlistTag.Add(trackList);
+                stringBuilder.AppendLine(playlistTag.ToString());
             }
 
-            var playlistTag = new XElement("playlist", new XAttribute("version", playlist.Version.ToString()));
-            
-            playlistTag.Add(trackList);
-            stringBuilder.AppendLine(playlistTag.ToString());
             return stringBuilder.ToString();
+            
+
+           
         }
 
         public XSPFPlaylist Deserialize(Stream stream)
